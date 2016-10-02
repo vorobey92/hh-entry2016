@@ -17,6 +17,18 @@ public class SubSequenceSearchTest {
     }
 
     @Test
+    public void findSequenceOd678Test() {
+        SubSequenceSearch sss = new SubSequenceSearch("678");
+        assertEquals(6, sss.find());
+    }
+
+    @Test
+    public void findSequenceOd973Test() {
+        SubSequenceSearch sss = new SubSequenceSearch("973");
+        assertEquals(1082, sss.find());
+    }
+
+    @Test
     public void findSequenceOf111Test() {
         SubSequenceSearch sss = new SubSequenceSearch("111");
         assertEquals(12, sss.find());

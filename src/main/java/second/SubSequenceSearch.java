@@ -56,12 +56,13 @@ public class SubSequenceSearch {
             skip = 0;
 
             //append
-            if ((i + maskLength + 1) >= infSequence.length()) {
+            if ((i + maskLength) > infSequence.length()) {
                 increaseSequenceLength(infSequence.length() * 2);
             }
 
-            //truncate
-            if (i > infSequence.length() / 2 + maskLength) {
+            //обрезаем последовательность на случай, если искомая маска очень далеко
+            // чтобы избежать java.lang.OutOfMemoryError
+            if (i > (infSequence.length() / 2) + 1 + maskLength) {
                 truncateSequence();
                 i = 0;
             }
@@ -81,6 +82,9 @@ public class SubSequenceSearch {
         }
     }
 
+    /**
+     * Для прекращения ввода данных нужно ввести пустую строку.
+     */
     public static void main(String[] args) throws IOException {
         List<SubSequenceSearch> maskList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
@@ -103,16 +107,13 @@ public class SubSequenceSearch {
     }
 
     private void increaseSequenceLength(int newLength) {
-        long i;
-        for (i = 0; i < newLength; i++) {
+        long oldLength = infSequence.length();
+        if (newLength < oldLength) {
+            return;
+        }
+        for (long i = oldLength; i < newLength; i++) {
             infSequence.append(currentNumber++);
         }
-    }
-
-    private void truncateSequence() {
-        int numbersToTruncate = infSequence.length() / 2;
-        infSequence.delete(0, numbersToTruncate);
-        truncatedIndex += numbersToTruncate;
     }
 
     private void checkMask(String mask) {
@@ -132,5 +133,11 @@ public class SubSequenceSearch {
         if (intMask.compareTo(BigInteger.ZERO) < 0) {
             throw new IllegalArgumentException("Negative number " + intMask);
         }
+    }
+
+    private void truncateSequence() {
+        int numbersToTruncate = infSequence.length() / 2;
+        infSequence.delete(0, numbersToTruncate);
+        truncatedIndex += numbersToTruncate;
     }
 }
